@@ -154,9 +154,11 @@ describe("Custom Resolver", function(){
 
     var proxy = new Redbird(opts), resolver = function (host, url) {
       return url.match(/\/ignore/i) ? null : 'http://172.12.0.1/home'
+    }, otherResolver = function (host, url) {
+      return url.match(/\/ignore/i) ? 'http://172.12.0.2/home' : null
     }, result;
 
-    resolver.priority = 1;
+    resolver.priority = 2;
 
     proxy.register('mysite.example.com', 'http://127.0.0.1:9999');
     proxy.addResolver(resolver);
@@ -173,12 +175,22 @@ describe("Custom Resolver", function(){
       })
       .then(function (result) {
         expect(result.urls[0].hostname).to.be.eq('172.12.0.1');
+
+        // add other resolver with lower priority
+        // and check that it can match when the first does not
+        otherResolver.priority = 1;
+        proxy.addResolver(otherResolver);
+        return proxy.resolve('mysite.example.com', '/ignore');
+      })
+      .then(function (result) {
+        expect(result.urls[0].hostname).to.be.eq('172.12.0.2');
+        proxy.removeResolver(otherResolver);
         
         // use default resolver, as custom resolver should ignore input.
         return proxy.resolve('mysite.example.com', '/ignore');
       })
       .then(function (result) {
-        expect(result).to.be.undefined;
+        expect(result.urls[0].hostname).to.be.eq('127.0.0.1');
 
         // make custom resolver low priority and test.
         // result should match default resolver
