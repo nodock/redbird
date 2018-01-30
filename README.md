@@ -16,7 +16,7 @@ Great for routing many applications from different domains in one single host, h
 Developed by [manast](http://twitter.com/manast)
 
 [![BuildStatus](https://secure.travis-ci.org/nodock/redbird.png?branch=master)](http://travis-ci.org/nodock/redbird)
-[![NPM version](https://badge.fury.io/js/redbird.svg)](http://badge.fury.io/js/redbird)
+[![NPM version](https://img.shields.io/npm/v/@nodock/redbird.svg)](https://www.npmjs.com/package/@nodock/redbird)
 
 ## SUPER HOT
 
